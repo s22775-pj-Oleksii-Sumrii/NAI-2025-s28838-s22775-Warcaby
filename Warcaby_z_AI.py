@@ -30,7 +30,27 @@ BOARD_SIZE = 8
 TILE_SIZE = 80
 
 class CheckersGame:
+	"""
+    Klasa reprezentująca grę w warcaby z graficznym interfejsem użytkownika (tkinter).
+
+    Obsługuje dwa tryby:
+    - PvP (gracz kontra gracz)
+    - PvAI (gracz kontra komputer)
+
+    Atrybuty:
+        root (tk.Tk): główne okno aplikacji
+        mode (str): tryb gry ('pvp' lub 'ai')
+        board (list[list[str]]): plansza gry 8x8
+        turn (str): aktualny gracz ('w' dla białych, 'b' dla czarnych)
+        selected (tuple[int, int] | None): aktualnie wybrane pole na planszy
+    """
     def __init__(self, root):
+		"""
+        Inicjalizuje główne okno gry i tworzy ekran menu wyboru trybu.
+
+        Parametry:
+            root (tk.Tk): główne okno aplikacji
+        """
         self.root = root
         self.root.title("Warcaby 🟤⚪")
 
@@ -39,6 +59,7 @@ class CheckersGame:
 
     # === MENU STARTOWE ===
     def create_menu(self):
+		"""Tworzy ekran początkowy z wyborem trybu gry."""
         self.menu_frame = tk.Frame(self.root, bg="#EEE")
         self.menu_frame.pack(fill="both", expand=True)
 
@@ -54,6 +75,13 @@ class CheckersGame:
         btn_ai.pack(pady=20)
 
     def start_game(self, mode):
+		"""
+        Uruchamia właściwą grę po wybraniu trybu.
+        Usuwa menu i inicjalizuje planszę.
+
+        Parametry:
+            mode (str): 'pvp' lub 'ai'
+        """
         self.mode = mode
         self.menu_frame.destroy()
 
@@ -68,6 +96,13 @@ class CheckersGame:
 
     # === LOGIKA GRY ===
     def init_board(self):
+		"""
+        Tworzy początkowe ustawienie pionków na planszy 8x8.
+
+        Zwraca:
+            list[list[str]]: plansza zawierająca pionki białe ('w') i czarne ('b'),
+                             oraz puste pola (' ').
+        """
         board = [[' ' for _ in range(BOARD_SIZE)] for _ in range(BOARD_SIZE)]
         for r in range(3):
             for c in range(BOARD_SIZE):
@@ -80,6 +115,7 @@ class CheckersGame:
         return board
 
     def draw_board(self):
+		"""Rysuje planszę i wszystkie pionki na ekranie."""
         self.canvas.delete("all")
         for r in range(BOARD_SIZE):
             for c in range(BOARD_SIZE):
@@ -107,6 +143,12 @@ class CheckersGame:
             )
 
     def on_click(self, event):
+		"""
+        Obsługuje kliknięcia myszą – wybór pionka i wykonywanie ruchów.
+
+        Parametry:
+            event (tk.Event): obiekt zdarzenia kliknięcia
+        """
         col = event.x // TILE_SIZE
         row = event.y // TILE_SIZE
         if row >= BOARD_SIZE or col >= BOARD_SIZE:
@@ -127,6 +169,7 @@ class CheckersGame:
         self.draw_board()
 
     def next_turn(self):
+		"""Zamienia tury między graczami i uruchamia AI, jeśli aktywne."""
         self.turn = 'b' if self.turn == 'w' else 'w'
         self.draw_board()
 
@@ -134,6 +177,16 @@ class CheckersGame:
             self.root.after(600, self.ai_move)
 
     def try_move(self, start, end):
+		"""
+        Próbuje wykonać ruch z pola startowego do pola końcowego.
+
+        Parametry:
+            start (tuple[int, int]): współrzędne początkowe (rząd, kolumna)
+            end (tuple[int, int]): współrzędne końcowe (rząd, kolumna)
+
+        Zwraca:
+            bool: True jeśli ruch był poprawny, False w przeciwnym razie.
+        """
         sr, sc = start
         er, ec = end
         piece = self.board[sr][sc]
@@ -167,6 +220,15 @@ class CheckersGame:
         return False
 
     def move_piece(self, sr, sc, er, ec):
+		"""
+        Przenosi pionek z pola (sr, sc) na (er, ec) i sprawdza promocję.
+
+        Parametry:
+            sr (int): rząd startowy
+            sc (int): kolumna startowa
+            er (int): rząd końcowy
+            ec (int): kolumna końcowa
+        """
         piece = self.board[sr][sc]
         self.board[sr][sc] = ' '
         self.board[er][ec] = piece
@@ -178,6 +240,10 @@ class CheckersGame:
 
     # === AI ===
     def ai_move(self):
+		"""
+        Wykonuje ruch komputera (czarne pionki) na podstawie oceny planszy.
+        AI wybiera ruch o najwyższej wartości heurystycznej.
+        """
         moves = self.get_all_moves('b')
         if not moves:
             self.end_game("🏁 Wygrał gracz! 🎉")
@@ -205,6 +271,15 @@ class CheckersGame:
             self.end_game("🏁 Wygrał komputer 🤖")
 
     def get_all_moves(self, color):
+		"""
+        Zwraca listę wszystkich możliwych ruchów dla danego koloru.
+
+        Parametry:
+            color (str): 'w' lub 'b'
+
+        Zwraca:
+            list[tuple[tuple[int,int], tuple[int,int]]]: lista ruchów w formacie ((sr, sc), (er, ec))
+        """
         moves = []
         for r in range(BOARD_SIZE):
             for c in range(BOARD_SIZE):
@@ -220,6 +295,7 @@ class CheckersGame:
         return moves
 
     def simulate_move(self, board, start, end):
+		"""Symuluje wykonanie ruchu na kopii planszy."""
         sr, sc = start
         er, ec = end
         piece = board[sr][sc]
@@ -234,6 +310,7 @@ class CheckersGame:
             board[er][ec] = 'B'
 
     def try_move_sim(self, board, start, end):
+		"""Sprawdza, czy dany ruch byłby możliwy na kopii planszy."""
         sr, sc = start
         er, ec = end
         piece = board[sr][sc]
@@ -257,7 +334,12 @@ class CheckersGame:
         return False
 
     def evaluate_board(self, board):
-        """Prosta heurystyka: punkty za pionki i damki"""
+        """
+        Funkcja oceny planszy:
+        - pionek = 3 punkty
+        - damka = 5 punktów
+        Dodatnie wartości = przewaga komputera.
+        """
         score = 0
         for row in board:
             for p in row:
@@ -268,6 +350,12 @@ class CheckersGame:
         return score
 
     def end_game(self, message):
+		"""
+        Wyświetla komunikat o zakończeniu gry i blokuje kliknięcia.
+
+        Parametry:
+            message (str): wiadomość do wyświetlenia
+        """
         self.canvas.create_text(
             BOARD_SIZE*TILE_SIZE//2,
             BOARD_SIZE*TILE_SIZE//2,
