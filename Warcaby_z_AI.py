@@ -17,6 +17,10 @@ INSTRUKCJA PRZYGOTOWANIA ŚRODOWISKA:
 	- Otwórz VS Code
 	- Kliknij ikonę rozszerzeń po lewej stronie albo Ctrl+Shift+X
 	- Wyszukaj Python i zainstaluj rozszerzenie od Microsoft
+4. Otworz folder w którym znajduje się plik Warcaby_z_AI.py
+5. Uruchom gre:
+	- Otwórz plik Warcaby_z_AI.py
+	- Kliknij przycisk Run Python File albo Ctrl+F5
 """
 
 import tkinter as tk
