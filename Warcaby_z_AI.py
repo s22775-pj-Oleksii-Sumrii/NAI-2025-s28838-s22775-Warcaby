@@ -21,6 +21,8 @@ INSTRUKCJA PRZYGOTOWANIA ŚRODOWISKA:
 5. Uruchom gre:
 	- Otwórz plik Warcaby_z_AI.py
 	- Kliknij przycisk Run Python File albo Ctrl+F5
+	Alternatywnie: 
+	- Jeżeli Python jest zainstalowany na komputerze i rozpozna pliki z rozszerzeniem .py można uruchomić podwójnym kliknięciem myszy.
 """
 
 import tkinter as tk
