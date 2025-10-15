@@ -17,7 +17,6 @@ INSTRUKCJA PRZYGOTOWANIA ŚRODOWISKA:
 	- Otwórz VS Code
 	- Kliknij ikonę rozszerzeń po lewej stronie albo Ctrl+Shift+X
 	- Wyszukaj Python i zainstaluj rozszerzenie od Microsoft
-    python warcaby_z_AI.py
 """
 
 import tkinter as tk
