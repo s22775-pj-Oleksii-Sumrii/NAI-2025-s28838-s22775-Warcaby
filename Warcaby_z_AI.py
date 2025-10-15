@@ -7,8 +7,8 @@ ZASADY GRY:
 - podczas jednego ruchu tym samym pionkiem można zbić więcej niż jeden pion.
 
 AUTORZY:
-- Oleksii Sumrii
-- Oskar Szyszko
+- Oleksii Sumrii (s22775)
+- Oskar Szyszko (s28838)
 
 INSTRUKCJA PRZYGOTOWANIA ŚRODOWISKA:
 1. Zainstaluj Python 3.8 lub nowszy z https://python.org  
