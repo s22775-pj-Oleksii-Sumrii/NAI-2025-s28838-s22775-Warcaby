@@ -114,7 +114,10 @@ dt_wine = DecisionTreeClassifier(criterion="entropy", max_depth=3, random_state=
 # criterion='entropy' -> Mówi drzewu, żeby używało wzoru na Entropię Shannona.
 # max_depth=3 -> Ogranicza drzewo do 3 poziomów głębokości.
 # random_state=42 -> Zapewnia stałość wyników przy budowie drzewa.
-
+"""
+Entropia Shannona to pojęcie wprowadzone przez Claude'a Shannona w 1948 roku, 
+które stało się fundamentem teorii informacji. Jest to miara niepewności, nieuporządkowania oraz losowości w danym systemie.
+"""
 """
 Entropia (criterion='entropy'):
 [cite_start]Jest to miara nieuporządkowania, losowości lub niepewności w systemie[cite: 33, 43].
@@ -203,6 +206,8 @@ df.rename(
 # inplace=True -> Zapisuje zmiany w tej samej zmiennej df, bez tworzenia kopii.
 
 print(f"Pobrano {len(df)} wierszy.")
+# Ten fragment kodu wypisuje na ekranie informację o tym, ile rekordów (wierszy) udało się pobrać z API Banku Światowego i zapisać w tabeli df
+
 
 # 2. TRANSFORMACJA DANYCH (PIVOT)
 print("Przetwarzanie danych...")
@@ -244,6 +249,9 @@ y = df_model["Target_Class"]  # y -> Nasz cel (klasa w 2023).
 
 # Wizualizacja danych
 plt.figure(figsize=(8, 5))
+# Ta linijka kodu przygotowuje puste "płótno" (obszar roboczy), na którym za chwilę zostanie narysowany wykres. Pochodzi ona z biblioteki Matplotlib.
+# 8 – to szerokość wykresu (oś pozioma X).
+# 5 – to wysokość wykresu (oś pionowa Y).
 sns.scatterplot(
     x=df_model["2022"],
     y=df_model[target_year],
@@ -256,6 +264,14 @@ plt.title(f"Bezrobocie: 2022 vs {target_year} (Podział na klasy)")
 plt.plot([0, max(df_model["2022"])], [median_val, median_val], "k--", label="Mediana")
 # plt.plot -> Rysuje czarną przerywaną linię oznaczającą próg podziału.
 plt.legend()
+"""Funkcja plt.legend() jest sprytna – nie musisz jej ręcznie wpisywać tekstów. Ona sama zbiera informacje z poprzednich komend rysowania:
+Z wykresu punktowego (sns.scatterplot): Zauważa parametr hue=df_model['Target_Class'].
+Automatycznie dodaje do legendy informację:
+Kolor niebieski = Klasa 0 (Niskie bezrobocie)
+Kolor czerwony = Klasa 1 (Wysokie bezrobocie)
+Instrukcja hue=df_model['Target_Class'] mówi bibliotece Seaborn: 
+"Pokoloruj każdy punkt na wykresie inaczej, w zależności od tego, 
+czy kraj należy do Klasy 0 (Niskie bezrobocie), czy do Klasy 1 (Wysokie bezrobocie)"."""
 plt.show()  # Wyświetlenie okna z wykresem.
 
 
@@ -268,6 +284,18 @@ X_train, X_test, y_train, y_test = train_test_split(
 scaler = StandardScaler()
 # Inicjalizacja skalera. SVM działa na odległościach geometrycznych.
 # Jeśli dane mają różne skale, SVM działa źle. Standaryzacja sprowadza dane do średniej=0 i odchylenia=1.
+"""
+Dla każdej kolumny (cechy) w Twoich danych, StandardScaler wykonuje operację matematyczną na każdej liczbie x:
+
+z= (x − μ)/ σ
+Gdzie:
+μ (mi) – to średnia arytmetyczna kolumny.
+σ (sigma) – to odchylenie standardowe kolumny.
+W zmiennej X znajdują się dane historyczne, na podstawie których chcemy przewidzieć przyszłość.
+Efekt: Po tej operacji Twoje dane mają średnią równą 0 i odchylenie standardowe równe 1.
+Wcześniej: Bezrobocie wahało się np. od 2% do 30%.
+Teraz: Bezrobocie waha się np. od -1.5 do +1.5 (gdzie 0 to światowa średnia).
+"""
 
 X_train = scaler.fit_transform(X_train)
 # .fit_transform -> Oblicz średnią z danych treningowych I przeskaluj je.
